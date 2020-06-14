@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const saltRounds = 15;
 const tempUserModel = require('../models/tempUserModel');
 const userModel = require('../models/userModel');
 const sendOTP = require('../helpers/sendOTP');
@@ -68,7 +66,7 @@ const createTempUser = (req,res,recoverPassword) => {
 const verifyOtp = (req,res,resData,cb) => {
 
     var decoded = accessTokenManager.verifyAccessToken(req.body.tempAccessToken);
-    if(!decoded || !validator.isPositiveNumber(decoded.tempUserId) || !decoded.tempSessionId) {
+    if(!decoded || !validator.isPositiveNumber(decoded.tempUserId) || !decoded.tempSessionId || !req.body.contactNo) {
         resData.errorMessage.fatalError = 'Invalid request';
         return res.json(resData);
     }
@@ -114,7 +112,7 @@ router.post('/register/set-password',function(req,res) {
     }
     
     verifyOtp(req,res,resData,(tempUserId) => {
-        validateAndPreparePassword(req,res,resData,(password) => {
+        validateAndPreparePassword(req,res,resData,(hashedPassword) => {
             userModel.create(res,resData,{contactNo: req.body.contactNo, password: hashedPassword},(userId) => {
                 if(!userId) {
                     resData.errorMessage.fatalError = "Something went wrong!!";
@@ -256,7 +254,7 @@ router.post('/recover-password/change-password',function(req,res) {
         },
         accessToken: ""
     }
-    
+
     verifyOtp(req,res,resData,(tempUserId) => {
         validateAndPreparePassword(req,res,resData,(hashedPassword) => {
             userModel.update(res,resData,"contactNo="+ req.body.contactNo,{password: hashedPassword},(userId) => {

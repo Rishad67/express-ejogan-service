@@ -1,4 +1,6 @@
 const validator = require('../helpers/validationHelper');
+const bcrypt = require('bcryptjs');
+const saltRounds = 15;
 
 const validateAndPreparePassword = (req,res,resData,cb) => {
     let msg = validator.isValidPassword(req.body.password);

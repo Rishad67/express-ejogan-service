@@ -1,4 +1,5 @@
 const validator = require('../helpers/validationHelper');
+const bcrypt = require('bcryptjs');
 
 const matchPassword = (res,resData,password,hashedPassword,cb) => {
     var msg = validator.isValidPassword(password);
