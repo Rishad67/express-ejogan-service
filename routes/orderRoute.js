@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const orderModel = require('../models/orderModel');
 const validateOrderData = require('../validation/validateOrderData');
+const isLoggedIn = require('../helpers/isLoggedIn');
 
 router.post('/create',(req,res) => {
     let resData = {
@@ -40,7 +41,7 @@ router.post('/details',(req,res) => {
     });
 });
 
-router.post('/all',(req,res) => {
+router.post('/my-orders',(req,res) => {
     let resData = {
         success: false,
         errorMessage: {
@@ -48,10 +49,12 @@ router.post('/all',(req,res) => {
             authError:  false
         }
     };
-    orderModel.getAll(res,resData,query,project,(orders) => {
-        resData.orders = orders;
-        resData.success = true;
-        res.json(resData);
+    isLoggedIn(req,res,resData,"id",(user) => {
+        orderModel.getAll(res,resData,"1=1","*",(orders) => {
+            resData.orders = orders;
+            resData.success = true;
+            res.json(resData);
+        });
     });
 });
 

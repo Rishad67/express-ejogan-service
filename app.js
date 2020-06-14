@@ -27,8 +27,11 @@ app.use(session({
     key: 'session_cookie_name',
     secret: 'session_cookie_secret',
     store: sessionStore,
-    resave: false,
-    saveUninitialized: true
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 90 * 24 * 3600 * 1000 //3 month
+    }
 }));
 
 const orderRoute = require("./routes/orderRoute");
@@ -40,6 +43,7 @@ app.use('/api/admin',adminRoute);
 app.use('/api/account',accountRoute);
 
 app.get("/",(req,res) => {
+    console.log("sessionID: "+req.session.id);
     res.send("<h1> Welcome to Express service of Ejogan.com </h1>");
 });
 

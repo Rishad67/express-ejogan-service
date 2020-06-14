@@ -14,7 +14,7 @@ const validateAndPreparePassword = (req,res,resData,cb) => {
         return res.json(resData);
     }
 
-    bcrypt.hash(req.body.password,saltRounds).then(function(hashedPassword) {
+    bcrypt.hash(req.body.password,saltRounds).then((hashedPassword) => {
         cb(hashedPassword);
     })
     .catch(err => {
