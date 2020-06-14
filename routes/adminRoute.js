@@ -4,7 +4,7 @@ const DbAction = require('../db/bulkActions');
 
 router.post('/createAllTables',(req,res) => {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: "",
             authError:  false
@@ -16,7 +16,7 @@ router.post('/createAllTables',(req,res) => {
 
 router.post('/deleteAllTables',(req,res) => {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: "",
             authError:  false

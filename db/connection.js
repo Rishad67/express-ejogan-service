@@ -3,8 +3,8 @@ const mysql = require("mysql");
 
 const db = mysql.createConnection({
     host     : 'localhost',
-    user     : 'Rishad67',//'ejoganco_express',
-    password : 'me@wordpress19',//'jzHo=VFY}$!@',
+    user     : 'rishad67',
+    password : '*rishad67#',
     database : 'ejoganco_express_service'
 });
   

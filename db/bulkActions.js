@@ -13,7 +13,7 @@ const DbAction = {};
 
 const doAction = (queryList, index, res, resData) => {
     if(index < 0) {
-        resData.success = 1;
+        resData.success = true;
         resData.message = "Task Finished Successfully";
         return res.json(resData);
     }

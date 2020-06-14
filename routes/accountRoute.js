@@ -13,7 +13,7 @@ const matchPassword = require('../helpers/matchPassword');
 
 const createTempUser = (req,res,recoverPassword) => {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: ""
         },
@@ -28,8 +28,9 @@ const createTempUser = (req,res,recoverPassword) => {
     tempUserModel.getDetails(res,resData,"contactNo="+ req.body.contactNo,"id,contactNo,otp,tempSessionId",(tempUser) => {
         if(tempUser) {
             /*sendOTP(res,resData,tempUser.otp,() => {*/
+                console.log(tempUser.otp);
                 resData.tempAccessToken = accessTokenManager.generateAccessToken({tempUserId: tempUser.id,tempSessionId: tempUser.tempSessionId});
-                resData.success = 1;
+                resData.success = true;
                 return res.json(resData);
             //});
         }
@@ -52,8 +53,9 @@ const createTempUser = (req,res,recoverPassword) => {
                         return res.json(resData);
                     }
                     /*sendOTP(res,resData,otp,() => {*/
+                        console.log(otp);
                         resData.tempAccessToken = accessTokenManager.generateAccessToken({tempUserId: tempUserId,tempSessionId: req.session.id});
-                        resData.success = 1;
+                        resData.success = true;
                         return res.json(resData);
                     //});
 
@@ -98,13 +100,13 @@ const verifyOtp = (req,res,resData,cb) => {
     });
 }
 
-router.post('/register',function(req,res) {
+router.post('/register/init',function(req,res) {
     createTempUser(req,res,false);
 });
 
 router.post('/register/set-password',function(req,res) {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: ""
         },
@@ -120,7 +122,7 @@ router.post('/register/set-password',function(req,res) {
                 }
                 tempUserModel.delete(res,resData,"id="+ tempUserId,() => {
                     resData.accessToken = accessTokenManager.generateAccessToken({userId: userId, sessionId: req.session.id});
-                    resData.success = 1;
+                    resData.success = true;
                     return res.json(resData);
                 });
             });
@@ -130,7 +132,7 @@ router.post('/register/set-password',function(req,res) {
 
 router.post('/send-otp-again',function(req,res) {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: ""
         }
@@ -159,7 +161,7 @@ router.post('/send-otp-again',function(req,res) {
                 let otp =  Math.floor(100000 + Math.random() * 900000);
                 /*sendOTP(res,resData,otp,() => {*/
                     tempUserModel.update(res,resData,"id="+ tempUserId,{otp: otp,otpTrials: 0,lastOtpSendTime: new Date()},() => {
-                        resData.success = 1;
+                        resData.success = true;
                         return res.json(resData);
                     });
                 //});
@@ -183,7 +185,7 @@ router.post('/send-otp-again',function(req,res) {
             if(timeIntervalLastOtp >= 30000) {
                 /*sendOTP(res,resData,tempUser.otp,() => {*/
                     tempUserModel.update(res,resData,"id="+ tempUserId,{lastOtpSendTime: new Date()},() => {
-                        resData.success = 1;
+                        resData.success = true;
                         return res.json(resData);
                     });
                 //});
@@ -199,7 +201,7 @@ router.post('/send-otp-again',function(req,res) {
 
 router.post('/log-in',function(req,res) {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: ""
         },
@@ -219,7 +221,7 @@ router.post('/log-in',function(req,res) {
 
         matchPassword(res,resData,req.body.password,user.password,() => {
             resData.accessToken = accessTokenManager.generateAccessToken({userId: user.id, sessionId: req.session.id});
-            resData.success = 1;
+            resData.success = true;
             res.json(resData);
         });
     });
@@ -227,7 +229,7 @@ router.post('/log-in',function(req,res) {
 
 router.post('/log-out',function(req,res) {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: "",
             authError:  false
@@ -237,18 +239,18 @@ router.post('/log-out',function(req,res) {
     const isLoggedIn = require('../helpers/isLoggedIn');
     isLoggedIn(req,res,resData,null,(user) => {
         req.session.destroy();
-        resData.success = 1;
+        resData.success = true;
         res.json(resData);
     })
 });
 
-router.post('/recover-password',function(req,res) {
+router.post('/recover-password/init',function(req,res) {
     createTempUser(req,res,true);
 });
 
 router.post('/recover-password/change-password',function(req,res) {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: ""
         },
@@ -265,7 +267,7 @@ router.post('/recover-password/change-password',function(req,res) {
 
                 tempUserModel.delete(res,resData,"id="+ tempUserId,() => {
                     resData.accessToken = accessTokenManager.generateAccessToken({userId: userId, sessionId: req.session.id});
-                    resData.success = 1;
+                    resData.success = true;
                     return res.json(resData);
                 });
             });
@@ -275,7 +277,7 @@ router.post('/recover-password/change-password',function(req,res) {
 
 router.post('/update/change-password',function(req,res) {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: ""
         }
@@ -286,7 +288,7 @@ router.post('/update/change-password',function(req,res) {
         matchPassword(res,resData,req.body.currentPassword,user.password,() => {
             validateAndPreparePassword(req,res,resData,(hashedPassword) => {
                 userModel.update(res,resData,"id="+ user.id,{password: hashedPassword},(userId) => {
-                    resData.success = 1;
+                    resData.success = true;
                     return res.json(resData);
                 });
             })
@@ -297,7 +299,7 @@ router.post('/update/change-password',function(req,res) {
 
 router.post('/update/profile',function(req,res) {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: ""
         },
@@ -312,7 +314,7 @@ router.post('/update/profile',function(req,res) {
             return res.json(resData);
 
         userModel.update(res,resData,"id="+ user.id,updatedUser,(userId) => {
-            resData.success = 1;
+            resData.success = true;
             return res.json(resData);
         });
     });

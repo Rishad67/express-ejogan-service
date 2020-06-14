@@ -5,7 +5,7 @@ const validateOrderData = require('../validation/validateOrderData');
 
 router.post('/create',(req,res) => {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: "",
             authError:  false
@@ -18,14 +18,14 @@ router.post('/create',(req,res) => {
         return res.json(resData);
 
     orderModel.create(res,resData,newOrder,() => {
-        resData.success = 1;
+        resData.success = true;
         res.json(resData);
     });
 });
 
 router.post('/details',(req,res) => {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: "",
             authError:  false
@@ -35,14 +35,14 @@ router.post('/details',(req,res) => {
     let query = "id="+ req.body.id;
     orderModel.getDetails(res,resData,query,"*",(order) => {
         resData.order = order;
-        resData.success = 1;
+        resData.success = true;
         res.json(resData);
     });
 });
 
 router.post('/all',(req,res) => {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: "",
             authError:  false
@@ -50,14 +50,14 @@ router.post('/all',(req,res) => {
     };
     orderModel.getAll(res,resData,query,project,(orders) => {
         resData.orders = orders;
-        resData.success = 1;
+        resData.success = true;
         res.json(resData);
     });
 });
 
 router.post("/update",(req,res) => {
     let resData = {
-        success: 0,
+        success: false,
         errorMessage: {
             fatalError: "",
             authError:  false
@@ -70,7 +70,7 @@ router.post("/update",(req,res) => {
         return res.json(resData);
         
     orderModel.update(res,resData,"id="+ req.body.id,updatedOrder,() => {
-        resData.success = 1;
+        resData.success = true;
         res.json(resData);
     });
 });
