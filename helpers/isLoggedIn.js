@@ -10,8 +10,6 @@ const isLoggedIn = (req,res,resData,userFields,cb) => {
         return res.json(resData);
     }
 
-    console.log(req.session.id);
-    console.log(decoded.sessionId);
     if(decoded.sessionId !== req.session.id) {
         resData.errorMessage.authError = true;
         return res.json(resData);

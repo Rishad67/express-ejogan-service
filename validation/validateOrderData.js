@@ -62,14 +62,14 @@ module.exports = (data,errorMessage) => {
     }
 
 
-    if(!validator.isValidLattitude(data.deliveryAddressLattitude) || !validator.isValidLongitude(data.deliveryAddressLongitude)) {
+    /*if(!validator.isValidLattitude(data.deliveryAddressLattitude) || !validator.isValidLongitude(data.deliveryAddressLongitude)) {
         error = true;
         errorMessage.DeliveryAddressCoordinate = "The location chosen is invalid, try again!";
     }
     else {
         newOrder.deliveryAddressLattitude = data.deliveryAddressLattitude;
         newOrder.deliveryAddressLongitude = data.deliveryAddressLongitude;
-    }
+    }*/
 
     if(!validator.isValidPhoneNumber(data.deliveryContactNo)) {
         error = true;
@@ -77,6 +77,14 @@ module.exports = (data,errorMessage) => {
     }
     else {
         newOrder.deliveryContactNo = data.deliveryContactNo;
+    }
+
+    if(!validator.isPositiveNumber(data.clientId)) {
+        error = true;
+        errorMessage.fatalError = "Something went wrong!!";
+    }
+    else {
+        newOrder.clientId = data.clientId;
     }
     
     

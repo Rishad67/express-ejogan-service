@@ -8,7 +8,7 @@ const user = {
         email VARCHAR(255),\
         contactNo VARCHAR(15),\
         password VARCHAR(255),\
-        role int,\
+        role int FOREIGN KEY REFERENCES ej_role(id),\
         joinedOn DATETIME NOT NULL DEFAULT NOW(),\
         nid VARCHAR(20),\
         bankAccNo VARCHAR(20)\
@@ -23,17 +23,7 @@ user.create = (res,resData,data,cb) => {
             return res.json(resData);
         }
 
-        db.query("SELECT id FROM ej_user WHERE contactNo = "+data.contactNo, (err, results) => {
-            if (err) {
-                console.log(err);
-                resData.errorMessage.fatalError = "Something went wrong!!";
-                return res.json(resData);
-            }
-            if(results[0])
-                cb(results[0].id);
-            else
-                cb();
-        });
+        cb(result.insertId);
     });
 };
  

@@ -20,17 +20,8 @@ tempUser.create = (res,resData,data,cb) => {
             resData.errorMessage.fatalError = "Something went wrong!!";
             return res.json(resData);
         }
-        db.query("SELECT id FROM ej_temp_user WHERE contactNo = "+data.contactNo, (err, results) => {
-            if (err) {
-                console.log(err);
-                resData.errorMessage.fatalError = "Something went wrong!!";
-                return res.json(resData);
-            }
-            if(results[0])
-                cb(results[0].id);
-            else
-                cb();
-        });
+
+        cb(result.insertId);
     });
 };
 

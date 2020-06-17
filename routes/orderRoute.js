@@ -13,14 +13,16 @@ router.post('/create',(req,res) => {
         }
     };
 
-    let newOrder = validateOrderData(req.body,resData.errorMessage);
+    isLoggedIn(req,res,resData,"id",(user) => {
+        let newOrder = validateOrderData(req.body,resData.errorMessage);
 
-    if(!newOrder)
-        return res.json(resData);
+        if(!newOrder)
+            return res.json(resData);
 
-    orderModel.create(res,resData,newOrder,() => {
-        resData.success = true;
-        res.json(resData);
+        orderModel.create(res,resData,newOrder,() => {
+            resData.success = true;
+            res.json(resData);
+        });
     });
 });
 
@@ -33,11 +35,13 @@ router.post('/details',(req,res) => {
         }
     };
 
-    let query = "id="+ req.body.id;
-    orderModel.getDetails(res,resData,query,"*",(order) => {
-        resData.order = order;
-        resData.success = true;
-        res.json(resData);
+    isLoggedIn(req,res,resData,"id",(user) => {
+        let query = "id="+ req.body.id;
+        orderModel.getDetails(res,resData,query,"*",(order) => {
+            resData.order = order;
+            resData.success = true;
+            res.json(resData);
+        });
     });
 });
 
@@ -50,7 +54,7 @@ router.post('/my-orders',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        orderModel.getAll(res,resData,"1=1","*",(orders) => {
+        orderModel.getAll(res,resData,user.id,"*",(orders) => {
             resData.orders = orders;
             resData.success = true;
             res.json(resData);
@@ -66,15 +70,16 @@ router.post("/update",(req,res) => {
             authError:  false
         }
     };
+    isLoggedIn(req,res,resData,"id",(user) => {
+        let updatedOrder = validateOrderData(req.body,resData.errorMessage);
 
-    let updatedOrder = validateOrderData(req.body,resData.errorMessage);
-
-    if(!updatedOrder)
-        return res.json(resData);
-        
-    orderModel.update(res,resData,"id="+ req.body.id,updatedOrder,() => {
-        resData.success = true;
-        res.json(resData);
+        if(!updatedOrder)
+            return res.json(resData);
+            
+        orderModel.update(res,resData,"id="+ req.body.id,updatedOrder,() => {
+            resData.success = true;
+            res.json(resData);
+        });
     });
 });
 

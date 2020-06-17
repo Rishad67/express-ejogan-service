@@ -9,8 +9,8 @@ const role = {
             description VARCHAR(255)\
         );",
         "CREATE TABLE IF NOT EXISTS ej_role_permission(\
-            roleId int,\
-            permissionId int\
+            roleId int FOREIGN KEY REFERENCES ej_role(id),\
+            permissionId int FOREIGN KEY REFERENCES ej_permission(id)\
         );"
     ]
 };

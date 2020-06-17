@@ -4,9 +4,9 @@ const db = require('../db/connection');
 const client = {
     schema: "CREATE TABLE IF NOT EXISTS ej_client(\
         id int AUTO_INCREMENT PRIMARY KEY,\
-        organization VARCHAR(255),\
-        owner int,\
-        websiteUrl VARCHAR(255)\
+        name VARCHAR(255),\
+        owner int FOREIGN KEY REFERENCES ej_user(id),\
+        website VARCHAR(255)\
     );"
 };
 
@@ -17,8 +17,8 @@ client.create = (res,resData,data,cb) => {
             resData.errorMessage.fatalError = "Something went wrong!!";
             return res.json(resData);
         }
+        cb(result.insertId);
 
-        cb();
     });
 };
 
@@ -33,6 +33,18 @@ client.update = (res,resData,query,updatedData,cb) => {
         cb();
     });
 };
+
+client.getAll = (res,resData,query,project,cb) => {
+    db.query("SELECT "+ project +" FROM ej_client WHERE "+ query,(err,results) => {
+        if(err) {
+            console.log(err);
+            resData.errorMessage.fatalError = "Something went wrong!!";
+            return res.json(resData);
+        }
+
+        cb(results);
+    })
+}
 
 client.getDetails = (res,resData,query,project,cb) => {
     db.query("SELECT "+ project +" FROM ej_client WHERE "+ query,(err,results) => {
