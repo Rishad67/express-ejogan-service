@@ -15,7 +15,8 @@ const location = {
         latitude int,\
         longitude int,\
         contactNo VARCHAR(255),\
-        clientId int FOREIGN KEY REFERENCES ej_client(id)\
+        clientId int,\
+        FOREIGN KEY (clientId) REFERENCES ej_client(id)\
     );"
 };
 

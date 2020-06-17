@@ -5,8 +5,9 @@ const client = {
     schema: "CREATE TABLE IF NOT EXISTS ej_client(\
         id int AUTO_INCREMENT PRIMARY KEY,\
         name VARCHAR(255),\
-        owner int FOREIGN KEY REFERENCES ej_user(id),\
-        website VARCHAR(255)\
+        ownerId int,\
+        website VARCHAR(255),\
+        FOREIGN KEY (ownerId) REFERENCES ej_user(id)\
     );"
 };
 

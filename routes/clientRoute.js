@@ -20,7 +20,7 @@ router.post('/create',(req,res) => {
         if(!newClient)
             return res.json(resData);
 
-        newClient.owner = user.id;
+        newClient.ownerId = user.id;
         clientModel.create(res,resData,newClient,(clientId) => {
             req.body.locations.forEach(item => {
                 item.push(clientId);
@@ -68,7 +68,7 @@ router.post('/my-clients',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        clientModel.getAll(res,resData,"owner="+ user.id,"name,website",(clients) => {
+        clientModel.getAll(res,resData,"owner="+ user.id,"id,name,website",(clients) => {
             resData.clients = clients;
             resData.success = true;
             res.json(resData);

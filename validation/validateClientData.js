@@ -36,7 +36,6 @@ module.exports = (data,errorMessage) => {
             errorMessage.fatalError = "Something went wrong!!";
         }
     }
-    
 
     if(!error)
         return newClient;

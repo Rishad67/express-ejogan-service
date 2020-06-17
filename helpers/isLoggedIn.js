@@ -6,7 +6,7 @@ const validator = require('./validationHelper');
 const isLoggedIn = (req,res,resData,userFields,cb) => {
     var decoded = accessTokenManager.verifyAccessToken(req.body.accessToken);
     if(!decoded || !validator.isPositiveNumber(decoded.userId) || !decoded.sessionId) {
-        resData.errorMessage.fatalError = 'Invalid request';
+        resData.errorMessage.authError = true;
         return res.json(resData);
     }
 

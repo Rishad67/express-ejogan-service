@@ -31,30 +31,30 @@ const doAction = (queryList, index, res, resData) => {
 
 DbAction.createAllTables = (res,resData) => {
     let queryList = [
-        clientModel.schema,
-        locationModel.schema,
         ...orderModel.schemas,
         orderStateModel.schema,
-        permissionModel.schema,
-        ...roleModel.schemas,
-        tempUserModel.schema,
+        locationModel.schema,
+        clientModel.schema,
         userModel.schema,
+        ...roleModel.schemas,
+        permissionModel.schema,
+        tempUserModel.schema,
     ];
     doAction(queryList, queryList.length-1, res, resData);
 }
 
 DbAction.DropAllTables = (res,resData) => {
     let queryList = [
-        "DROP TABLE IF EXISTS ej_client;",
-        "DROP TABLE IF EXISTS ej_location;",
-        "DROP TABLE IF EXISTS ej_order;",
-        "DROP TABLE IF EXISTS ej_order_orderstate;",
-        "DROP TABLE IF EXISTS ej_orderstate;",
+        "DROP TABLE IF EXISTS ej_temp_user;",
         "DROP TABLE IF EXISTS ej_permission;",
         "DROP TABLE IF EXISTS ej_role;",
         "DROP TABLE IF EXISTS ej_role_permission;",
-        "DROP TABLE IF EXISTS ej_temp_user;",
         "DROP TABLE IF EXISTS ej_user;",
+        "DROP TABLE IF EXISTS ej_client;",
+        "DROP TABLE IF EXISTS ej_location;",
+        "DROP TABLE IF EXISTS ej_order;",
+        "DROP TABLE IF EXISTS ej_orderstate;",
+        "DROP TABLE IF EXISTS ej_order_orderstate;",
     ];
     doAction(queryList, queryList.length-1, res, resData);
 }

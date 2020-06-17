@@ -3,15 +3,17 @@ const db = require('../db/connection');
 
 const role = {
     schemas: [
+        "CREATE TABLE IF NOT EXISTS ej_role_permission(\
+            roleId int,\
+            permissionId int,\
+            FOREIGN KEY (roleId) REFERENCES ej_role(id),\
+            FOREIGN KEY (permissionId) REFERENCES ej_permission(id)\
+        );",
         "CREATE TABLE IF NOT EXISTS ej_role(\
             id int AUTO_INCREMENT PRIMARY KEY,\
             name VARCHAR(255),\
             description VARCHAR(255)\
         );",
-        "CREATE TABLE IF NOT EXISTS ej_role_permission(\
-            roleId int FOREIGN KEY REFERENCES ej_role(id),\
-            permissionId int FOREIGN KEY REFERENCES ej_permission(id)\
-        );"
     ]
 };
 

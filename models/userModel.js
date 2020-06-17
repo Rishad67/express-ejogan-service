@@ -8,10 +8,11 @@ const user = {
         email VARCHAR(255),\
         contactNo VARCHAR(15),\
         password VARCHAR(255),\
-        role int FOREIGN KEY REFERENCES ej_role(id),\
+        roleId int,\
         joinedOn DATETIME NOT NULL DEFAULT NOW(),\
         nid VARCHAR(20),\
-        bankAccNo VARCHAR(20)\
+        bankAccNo VARCHAR(20),\
+        FOREIGN KEY (roleId) REFERENCES ej_role(id)\
     );"
 };
 

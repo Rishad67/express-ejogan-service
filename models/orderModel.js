@@ -3,6 +3,15 @@ const db = require('../db/connection');
 
 const order = {
     schemas: [
+        "CREATE TABLE IF NOT EXISTS ej_order_orderstate(\
+            orderId int,\
+            stateId int,\
+            date DATETIME NOT NULL DEFAULT NOW(),\
+            deliveryPersonId int,\
+            FOREIGN KEY (deliveryPersonId) REFERENCES ej_user(id),\
+            FOREIGN KEY (orderId) REFERENCES ej_order(id),\
+            FOREIGN KEY (stateId) REFERENCES ej_orderstate(id)\
+        );",
         "CREATE TABLE IF NOT EXISTS ej_order(\
             id int AUTO_INCREMENT PRIMARY KEY,\
             summary VARCHAR(255),\
@@ -13,25 +22,23 @@ const order = {
             parcelLength int,\
             parcelWidth int,\
             parcelHeight int,\
-            deliveryAddress int FOREIGN KEY REFERENCES ej_location(id),\
+            deliveryAddressId int,\
             deliveryContactNo VARCHAR(15),\
-            deliveryPersonId int FOREIGN KEY REFERENCES ej_user(id),\
-            clientId int FOREIGN KEY REFERENCES ej_client(id),\
-            pickupLocation int FOREIGN KEY REFERENCES ej_location(id),\
+            deliveryPersonId int,\
+            clientId int,\
+            pickupLocationId int,\
             createdOn DATETIME NOT NULL DEFAULT NOW(),\
             deliveryCharge int,\
             deliveryChargeReceived int,\
             paymentAccountNo VARCHAR(20),\
             paymentDate DATETIME,\
             transactionNo Text,\
-            rating int DEFAULT 0\
+            rating int DEFAULT 0,\
+            FOREIGN KEY (deliveryAddressId) REFERENCES ej_location(id),\
+            FOREIGN KEY (deliveryPersonId) REFERENCES ej_user(id),\
+            FOREIGN KEY (clientId) REFERENCES ej_client(id),\
+            FOREIGN KEY (pickupLocationId) REFERENCES ej_location(id)\
         );",
-        "CREATE TABLE IF NOT EXISTS ej_order_orderstate(\
-            orderId int FOREIGN KEY REFERENCES ej_order(id),\
-            stateId int FOREIGN KEY REFERENCES ej_state(id),\
-            date DATETIME NOT NULL DEFAULT NOW(),\
-            deliveryPersonId int FOREIGN KEY REFERENCES ej_user(id)\
-        );"
     ]
 };
 

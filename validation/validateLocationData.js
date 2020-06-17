@@ -3,7 +3,6 @@ module.exports = (data,errorMessage) => {
     let newLocation = {};
     let error = false;
 
-    console.log(data);
     if(!data.name) {
         newLocation.name = null;
     } else {
