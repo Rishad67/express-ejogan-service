@@ -8,16 +8,9 @@ const validateUserProfileData = require('../validation/validateUserProfileData')
 const validator = require('../helpers/validationHelper');
 const validateAndPreparePassword = require('../helpers/validateAndPreparePassword');
 const matchPassword = require('../helpers/matchPassword');
+const isLoggedIn = require('../helpers/isLoggedIn');
 
-const createTempUser = (req,res,recoverPassword) => {
-    let resData = {
-        success: false,
-        errorMessage: {
-            fatalError: ""
-        },
-        tempAccessToken: ""
-    }
-
+const createTempUser = (req,res,resData,recoverPassword) => {
     if(!validator.isValidPhoneNumber(req.body.contactNo)) {
         resData.errorMessage.contactNo = "Enter a valid phone number";
         return res.json(resData);
@@ -99,7 +92,14 @@ const verifyOtp = (req,res,resData,cb) => {
 }
 
 router.post('/register/init',function(req,res) {
-    createTempUser(req,res,false);
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: ""
+        },
+        tempAccessToken: ""
+    }
+    createTempUser(req,res,resData,false);
 });
 
 router.post('/register/set-password',function(req,res) {
@@ -236,7 +236,6 @@ router.post('/log-out',function(req,res) {
         }
     }
 
-    const isLoggedIn = require('../helpers/isLoggedIn');
     isLoggedIn(req,res,resData,null,(user) => {
         req.session.destroy();
         resData.success = true;
@@ -245,7 +244,14 @@ router.post('/log-out',function(req,res) {
 });
 
 router.post('/recover-password/init',function(req,res) {
-    createTempUser(req,res,true);
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: ""
+        },
+        tempAccessToken: ""
+    }
+    createTempUser(req,res,resData,true);
 });
 
 router.post('/recover-password/change-password',function(req,res) {
@@ -284,7 +290,6 @@ router.post('/update/change-password',function(req,res) {
         }
     }
 
-    const isLoggedIn = require('../helpers/isLoggedIn');
     isLoggedIn(req,res,resData,"id,password",(user) => {
         matchPassword(res,resData,req.body.currentPassword,user.password,() => {
             validateAndPreparePassword(req,res,resData,(hashedPassword) => {
@@ -307,7 +312,6 @@ router.post('/update/profile',function(req,res) {
         accessToken: ""
     };
 
-    const isLoggedIn = require('../helpers/isLoggedIn');
     isLoggedIn(req,res,resData,"id",(user) => {
         let updatedUser = validateUserProfileData(req.body,resData.errorMessage);
 
@@ -317,6 +321,63 @@ router.post('/update/profile',function(req,res) {
         userModel.update(res,resData,"id="+ user.id,updatedUser,(userId) => {
             resData.success = true;
             return res.json(resData);
+        });
+    });
+});
+
+router.post('/details',function(req,res) {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: ""
+        },
+    };
+
+    isLoggedIn(req,res,resData,"email,contactNo,name,nid",(user) => {
+        resData.profile = user;
+        resData.success = true;
+        return res.json(resData);
+
+    });
+});
+
+router.post('/update-contact/init',function(req,res) {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: ""
+        },
+        tempAccessToken: ""
+    }
+
+    isLoggedIn(req,res,resData,"id",(user) => {
+        userModel.getDetails(res,resData,"contactNo="+ req.body.newContactNo,"*",(user) => {
+            if(user) {
+                resData.errorMessage.contactNo = "This phone number is attached to an existing account";
+                return res.json(resData);
+            }
+            createTempUser(req,res,resData,true);
+        });
+    });
+});
+
+router.post('/update-contact/change',function(req,res) {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: ""
+        },
+        accessToken: ""
+    }
+
+    verifyOtp(req,res,resData,(tempUserId) => {
+        tempUserModel.delete(res,resData,"id="+ tempUserId,() => {
+            isLoggedIn(req,res,resData,"id",(user) => {
+                userModel.update(res,resData,"id="+ user.id,{contactNo: req.body.newContactNo},(userId) => {
+                    resData.success = true;
+                    return res.json(resData);
+                });
+            });
         });
     });
 });

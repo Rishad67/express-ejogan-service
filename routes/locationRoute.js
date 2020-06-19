@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const locationModel = require('../models/locationModel');
+const deliveryLocationModel = require('../models/deliveryLocationModel');
 const validateLocationData = require('../validation/validateLocationData');
 const isLoggedIn = require('../helpers/isLoggedIn');
 
@@ -44,7 +45,7 @@ router.post('/details',(req,res) => {
     });
 });
 
-router.post('/my-locations',(req,res) => {
+router.post('/my-delivery-locations',(req,res) => {
     let resData = {
         success: false,
         errorMessage: {
@@ -53,7 +54,7 @@ router.post('/my-locations',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        locationModel.getAll(res,resData,"1=1","*",(locations) => {
+        deliveryLocationModel.getAll(res,resData,"creatorId="+ user.id + " AND description LIKE '%"+ req.body.searchKey +"%';","id,description,contactNo",(locations) => {
             resData.locations = locations;
             resData.success = true;
             res.json(resData);

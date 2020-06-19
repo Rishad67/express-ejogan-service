@@ -1,5 +1,6 @@
 
 const db = require('../db/connection');
+const { query } = require('express');
 
 const order = {
     schemas: [
@@ -29,27 +30,31 @@ const order = {
             pickupLocationId int,\
             createdOn DATETIME NOT NULL DEFAULT NOW(),\
             deliveryCharge int,\
+            paymentStatus int DEFAULT 0,\
             deliveryChargeReceived int,\
             paymentAccountNo VARCHAR(20),\
             paymentDate DATETIME,\
             transactionNo Text,\
             rating int DEFAULT 0,\
+            currentStateId int,\
             FOREIGN KEY (deliveryAddressId) REFERENCES ej_location(id),\
             FOREIGN KEY (deliveryPersonId) REFERENCES ej_user(id),\
             FOREIGN KEY (clientId) REFERENCES ej_client(id),\
-            FOREIGN KEY (pickupLocationId) REFERENCES ej_location(id)\
+            FOREIGN KEY (pickupLocationId) REFERENCES ej_location(id),\
+            FOREIGN KEY (currentStateId) REFERENCES ej_orderstate(id)\
         );",
     ]
 };
 
 order.create = (res,resData,data,cb) => {
+    data.currentStateId = 1;
     db.query("INSERT INTO ej_order SET ?", data, (err, result) => {
         if (err) {
             console.log(err);
             resData.errorMessage.fatalError = "Something went wrong!!";
             return res.json(resData);
         }
-        db.query("INSERT INTO ej_order_orderstate SET ?", {orderId: result.insertId,stateId: 0}, (err, result) => {
+        db.query("INSERT INTO ej_order_orderstate SET ?", {orderId: result.insertId,stateId: 1}, (err, result) => {
             if (err) {
                 console.log(err);
                 resData.errorMessage.fatalError = "Something went wrong!!";
@@ -98,7 +103,8 @@ order.getAll = (res,resData,query,project,cb) => {
 }
 
 order.getMyOrders = (res,resData,userId,project,cb) => {
-    db.query("SELECT "+ project +" FROM ej_order INNER JOIN ej_client ON ej_order.clientId = ej_client.id WHERE owner="+ userId,(err,results) => {
+    let query = "SELECT "+ project +" FROM ej_order INNER JOIN ej_client ON ej_order.clientId = ej_client.id  INNER JOIN ej_orderstate ON ej_order.currentStateId = ej_orderstate.id WHERE ownerId="+ userId +" ORDER BY createdOn DESC";
+    db.query(query,(err,results) => {
         if(err) {
             console.log(err);
             resData.errorMessage.fatalError = "Something went wrong!!";

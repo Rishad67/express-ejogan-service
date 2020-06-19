@@ -33,6 +33,9 @@ location.create = (res,resData,data,cb) => {
 };
 
 location.createAll = (res,resData,data,cb) => {
+    if(data.length < 1)
+        return cb();
+
     db.query("INSERT INTO ej_location(name,city,thana,area,road,house,description,latitude,longitude,contactNo,clientId) VALUES ?", [data], (err, results) => {
         if (err) {
             console.log(err);

@@ -1,4 +1,6 @@
 const validator = require("../helpers/validationHelper");
+const validateLocationData = require('../validation/validateLocationData');
+
 module.exports = (data,errorMessage) => {
     let newOrder = {};
     let error = false;
@@ -53,24 +55,6 @@ module.exports = (data,errorMessage) => {
         newOrder.parcelHeight = data.parcelHeight;
     }
 
-    if(!validator.isValidString(data.deliveryAddress,5,100)) {
-        error = true;
-        errorMessage.deliveryAddress = "address length must be between 5 to 100 character";
-    }
-    else {
-        newOrder.deliveryAddress = data.deliveryAddress;
-    }
-
-
-    /*if(!validator.isValidLattitude(data.deliveryAddressLattitude) || !validator.isValidLongitude(data.deliveryAddressLongitude)) {
-        error = true;
-        errorMessage.DeliveryAddressCoordinate = "The location chosen is invalid, try again!";
-    }
-    else {
-        newOrder.deliveryAddressLattitude = data.deliveryAddressLattitude;
-        newOrder.deliveryAddressLongitude = data.deliveryAddressLongitude;
-    }*/
-
     if(!validator.isValidPhoneNumber(data.deliveryContactNo)) {
         error = true;
         errorMessage.deliveryContactNo = "Enter a valid phone number";
@@ -86,8 +70,34 @@ module.exports = (data,errorMessage) => {
     else {
         newOrder.clientId = data.clientId;
     }
-    
-    
+
+    if(typeof data.deliveryAddress  === 'object') {
+        data.deliveryAddress = validateLocationData(data.deliveryAddress);
+        if(!data.deliveryAddress) {
+            error = true;
+            errorMessage.fatalError = "Something went wrong!!";
+        }
+    }
+    else {
+        if(!validator.isPositiveNumber(data.deliveryAddress)) {
+            error = true;
+            errorMessage.fatalError = "Something went wrong!!";
+        }
+        else {
+            newOrder.deliveryAddressId = data.deliveryAddress;
+        }
+        data.deliveryAddress = undefined;
+    }
+
+
+    if(!validator.isPositiveNumber(data.pickupLocationId)) {
+        error = true;
+        errorMessage.fatalError = "Something went wrong!!";
+    }
+    else {
+        newOrder.pickupLocationId = data.pickupLocationId;
+    }
+
     if(!error)
         return newOrder;
 }

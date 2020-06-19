@@ -2,6 +2,7 @@ const db = require('./connection');
 
 const clientModel = require('../models/clientModel');
 const locationModel = require('../models/locationModel');
+const deliveryLocationModel = require('../models/deliveryLocationModel');
 const orderModel = require('../models/orderModel');
 const orderStateModel = require('../models/orderStateModel');
 const permissionModel = require('../models/permissionModel');
@@ -34,6 +35,7 @@ DbAction.createAllTables = (res,resData) => {
         ...orderModel.schemas,
         orderStateModel.schema,
         locationModel.schema,
+        deliveryLocationModel.schema,
         clientModel.schema,
         userModel.schema,
         ...roleModel.schemas,
@@ -51,6 +53,7 @@ DbAction.DropAllTables = (res,resData) => {
         "DROP TABLE IF EXISTS ej_role_permission;",
         "DROP TABLE IF EXISTS ej_user;",
         "DROP TABLE IF EXISTS ej_client;",
+        "DROP TABLE IF EXISTS ej_delivery_location;",
         "DROP TABLE IF EXISTS ej_location;",
         "DROP TABLE IF EXISTS ej_order;",
         "DROP TABLE IF EXISTS ej_orderstate;",

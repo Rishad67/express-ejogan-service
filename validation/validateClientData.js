@@ -7,7 +7,7 @@ module.exports = (data,errorMessage) => {
 
     if(!validator.isValidString(data.name,2,200)) {
         error = true;
-        errorMessage.name = "Name length must be between 2 to 200 character";
+        errorMessage.name = "Name must be between 2 to 200 character";
     }
     else {
         newClient.name = data.name;
@@ -28,7 +28,7 @@ module.exports = (data,errorMessage) => {
                 } else {
                     data.locations[i] = Object.values(data.locations[i]);
                 }
-        
+
             }
         }
         else {

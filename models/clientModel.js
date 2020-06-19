@@ -36,15 +36,45 @@ client.update = (res,resData,query,updatedData,cb) => {
 };
 
 client.getAll = (res,resData,query,project,cb) => {
-    db.query("SELECT "+ project +" FROM ej_client WHERE "+ query,(err,results) => {
+    db.query("SELECT "+ project +" FROM ej_client WHERE "+ query,(err,clients) => {
         if(err) {
             console.log(err);
             resData.errorMessage.fatalError = "Something went wrong!!";
             return res.json(resData);
         }
 
-        cb(results);
-    })
+        if(clients.length < 1)
+            return cb(clients);
+
+        let clientIds = [];
+        clients.forEach(c => {
+            clientIds.push(c.id);
+        });
+        db.query("SELECT id,clientId,description,contactNo FROM ej_location WHERE clientId IN (?) ORDER BY clientId",[clientIds], (err,locations) => {
+            if(err) {
+                console.log(err);
+                resData.errorMessage.fatalError = "Something went wrong!!";
+                return res.json(resData);
+            }
+            clients.forEach(client => {
+                client.locations = [];
+            });
+
+            let i = 0;
+            let currentClientIndex = 0;
+            while(i < locations.length) {
+                if(locations[i].clientId === clients[currentClientIndex].id) {
+                    locations[i].clientId = undefined;
+                    clients[currentClientIndex].locations.push(locations[i]);
+                    i++;
+                }
+                else {
+                    currentClientIndex++;
+                }
+            }
+            cb(clients);
+        });
+    });
 }
 
 client.getDetails = (res,resData,query,project,cb) => {

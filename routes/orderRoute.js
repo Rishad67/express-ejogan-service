@@ -2,7 +2,24 @@ const express = require('express');
 const router = express.Router();
 const orderModel = require('../models/orderModel');
 const validateOrderData = require('../validation/validateOrderData');
+const deliveryLocationModel = require('../models/deliveryLocationModel');
 const isLoggedIn = require('../helpers/isLoggedIn');
+
+const createOrder = (res,resData,newOrder,userId) => {
+    console.log(newOrder);
+    orderModel.create(res,resData,newOrder,() => {
+        let project = "ej_order.id as id,summary,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        orderModel.getMyOrders(res,resData,userId,project,(orders) => {
+            for(var i=0; i<orders.length; i++) {
+                orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";
+                orders[i].onGoing = true;
+            }
+            resData.orders = orders;
+            resData.success = true;
+            res.json(resData);
+        });
+    });
+}
 
 router.post('/create',(req,res) => {
     let resData = {
@@ -14,15 +31,23 @@ router.post('/create',(req,res) => {
     };
 
     isLoggedIn(req,res,resData,"id",(user) => {
-        let newOrder = validateOrderData(req.body,resData.errorMessage);
 
+        let newOrder = validateOrderData(req.body,resData.errorMessage);
+        console.log(resData.errorMessage);
         if(!newOrder)
             return res.json(resData);
 
-        orderModel.create(res,resData,newOrder,() => {
-            resData.success = true;
-            res.json(resData);
-        });
+        if(req.body.deliveryAddress) {
+            req.body.deliveryAddress.creatorId = user.id;
+
+            deliveryLocationModel.create(res,resData,req.body.deliveryAddress,(locationId) => {
+                newOrder.deliveryAddressId = locationId;
+                createOrder(res,resData,newOrder,user.id);
+            })
+        }
+        else {
+            createOrder(res,resData,newOrder,user.id);
+        }
     });
 });
 
@@ -54,7 +79,12 @@ router.post('/my-orders',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        orderModel.getAll(res,resData,user.id,"*",(orders) => {
+        let project = "ej_order.id as id,summary,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        orderModel.getMyOrders(res,resData,user.id,project,(orders) => {
+            for(var i=0; i < orders.length; i++) {
+                orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";
+                orders[i].onGoing = true;
+            }
             resData.orders = orders;
             resData.success = true;
             res.json(resData);

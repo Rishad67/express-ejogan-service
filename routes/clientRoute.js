@@ -26,8 +26,11 @@ router.post('/create',(req,res) => {
                 item.push(clientId);
             })
             locationModel.createAll(res,resData,req.body.locations,() => {
-                resData.success = true;
-                res.json(resData);
+                clientModel.getAll(res,resData,"ownerId="+ user.id,"id,name,website",(clients) => {
+                    resData.clients = clients;
+                    resData.success = true;
+                    res.json(resData);
+                });
             });
         });
     });
