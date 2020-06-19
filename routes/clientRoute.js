@@ -68,7 +68,7 @@ router.post('/my-clients',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        clientModel.getAll(res,resData,"owner="+ user.id,"id,name,website",(clients) => {
+        clientModel.getAll(res,resData,"ownerId="+ user.id,"id,name,website",(clients) => {
             resData.clients = clients;
             resData.success = true;
             res.json(resData);

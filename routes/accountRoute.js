@@ -119,6 +119,7 @@ router.post('/register/set-password',function(req,res) {
                     return res.json(resData);
                 }
                 tempUserModel.delete(res,resData,"id="+ tempUserId,() => {
+                    resData.timeOut = new Date(Date.now() + 24*3600*1000);
                     resData.accessToken = accessTokenManager.generateAccessToken({userId: userId, sessionId: req.session.id});
                     resData.success = true;
                     return res.json(resData);
@@ -218,6 +219,7 @@ router.post('/log-in',function(req,res) {
         }
 
         matchPassword(res,resData,req.body.password,user.password,() => {
+            resData.timeOut = new Date(Date.now() + 24*3600*1000);
             resData.accessToken = accessTokenManager.generateAccessToken({userId: user.id, sessionId: req.session.id});
             resData.success = true;
             res.json(resData);
@@ -264,6 +266,7 @@ router.post('/recover-password/change-password',function(req,res) {
                 }
 
                 tempUserModel.delete(res,resData,"id="+ tempUserId,() => {
+                    resData.timeOut = new Date(Date.now() + 24*3600*1000);
                     resData.accessToken = accessTokenManager.generateAccessToken({userId: userId, sessionId: req.session.id});
                     resData.success = true;
                     return res.json(resData);
