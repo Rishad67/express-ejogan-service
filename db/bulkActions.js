@@ -9,6 +9,7 @@ const permissionModel = require('../models/permissionModel');
 const roleModel = require('../models/roleModel');
 const tempUserModel = require('../models/tempUserModel');
 const userModel = require('../models/userModel');
+const contactUsModel = require('../models/contactUsModel');
 
 const DbAction = {};
 
@@ -32,6 +33,7 @@ const doAction = (queryList, index, res, resData) => {
 
 DbAction.createAllTables = (res,resData) => {
     let queryList = [
+        contactUsModel.schema,
         ...orderModel.schemas,
         orderStateModel.schema,
         locationModel.schema,
@@ -58,6 +60,7 @@ DbAction.DropAllTables = (res,resData) => {
         "DROP TABLE IF EXISTS ej_order;",
         "DROP TABLE IF EXISTS ej_orderstate;",
         "DROP TABLE IF EXISTS ej_order_orderstate;",
+        "DROP TABLE IF EXISTS ej_contact_us;",
     ];
     doAction(queryList, queryList.length-1, res, resData);
 }

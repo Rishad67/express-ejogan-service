@@ -24,7 +24,6 @@ const order = {
             parcelWidth int,\
             parcelHeight int,\
             deliveryAddressId int,\
-            deliveryContactNo VARCHAR(15),\
             deliveryPersonId int,\
             clientId int,\
             pickupLocationId int,\

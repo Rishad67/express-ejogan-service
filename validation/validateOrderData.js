@@ -55,14 +55,6 @@ module.exports = (data,errorMessage) => {
         newOrder.parcelHeight = data.parcelHeight;
     }
 
-    if(!validator.isValidPhoneNumber(data.deliveryContactNo)) {
-        error = true;
-        errorMessage.deliveryContactNo = "Enter a valid phone number";
-    }
-    else {
-        newOrder.deliveryContactNo = data.deliveryContactNo;
-    }
-
     if(!validator.isPositiveNumber(data.clientId)) {
         error = true;
         errorMessage.fatalError = "Something went wrong!!";
