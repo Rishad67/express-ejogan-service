@@ -5,14 +5,6 @@ module.exports = (data,errorMessage) => {
     let newOrder = {};
     let error = false;
 
-    if(!validator.isValidString(data.summary,2,200)) {
-        error = true;
-        errorMessage.summary = "summary length must be between 2 to 200 character";
-    }
-    else {
-        newOrder.summary = data.summary;
-    }
-
     if(!validator.isValidString(data.description,5,500)) {
         error = true;
         errorMessage.description = "description length must be between 5 to 500 character";
@@ -29,6 +21,11 @@ module.exports = (data,errorMessage) => {
         newOrder.category = data.category;
     }*/
 
+    newOrder.parcelSize = data.parcelSize;
+    newOrder.cashOndelivery = data.cashOndelivery ? 1 : 0;
+    newOrder.breakable = data.breakable ? 1 : 0;
+    newOrder.shippingType = data.shippingType;
+
     if(!validator.isPositiveNumber(data.totalPrice)) {
         error = true;
         errorMessage.totalPrice = "Price must be Positive Number";
@@ -43,16 +40,6 @@ module.exports = (data,errorMessage) => {
     }
     else {
         newOrder.parcelWeight = data.parcelWeight;
-    }
-
-    if(!validator.isPositiveNumber(data.parcelLength) || !validator.isPositiveNumber(data.parcelWidth) || !validator.isPositiveNumber(data.parcelHeight)) {
-        error = true;
-        errorMessage.dimension = "Length, width and height must be Positive Number";
-    }
-    else {
-        newOrder.parcelLength = data.parcelLength;
-        newOrder.parcelWidth = data.parcelWidth;
-        newOrder.parcelHeight = data.parcelHeight;
     }
 
     if(!validator.isPositiveNumber(data.clientId)) {

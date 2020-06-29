@@ -8,7 +8,7 @@ const isLoggedIn = require('../helpers/isLoggedIn');
 const createOrder = (res,resData,newOrder,userId) => {
     console.log(newOrder);
     orderModel.create(res,resData,newOrder,() => {
-        let project = "ej_order.id as id,summary,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
         orderModel.getMyOrders(res,resData,userId,project,(orders) => {
             for(var i=0; i<orders.length; i++) {
                 orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";
@@ -79,7 +79,7 @@ router.post('/my-orders',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        let project = "ej_order.id as id,summary,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
         orderModel.getMyOrders(res,resData,user.id,project,(orders) => {
             for(var i=0; i < orders.length; i++) {
                 orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";
@@ -111,6 +111,39 @@ router.post("/update",(req,res) => {
             res.json(resData);
         });
     });
+});
+
+router.post("/service-charge",(req,res) => {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: "",
+            authError:  false
+        }
+    };
+
+    resData.charges = [
+        {
+            type: "শিপমেন্ট চার্জ",
+            amount: 0
+        },
+        {
+            type: "ভঙ্গুর প্রোডাক্ট চার্জ",
+            amount: 0
+        },
+        {
+            type: "কালেকশন চার্জ",
+            amount: 0
+        },
+        {
+            type: "সর্বমোট",
+            amount: 0
+        }
+    ];
+
+    resData.success = true;
+    res.json(resData);
+
 });
 
 module.exports = router;

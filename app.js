@@ -40,6 +40,7 @@ const accountRoute = require("./routes/accountRoute");
 const clientRoute = require("./routes/clientRoute");
 const locationRoute = require("./routes/locationRoute");
 const contactRoute = require('./routes/contactRoute');
+const generalRoute = require('./routes/generalRoute');
 
 app.use('/api/order',orderRoute);
 app.use('/api/admin',adminRoute);
@@ -47,6 +48,7 @@ app.use('/api/account',accountRoute);
 app.use('/api/client',clientRoute);
 app.use('/api/location',locationRoute);
 app.use('/api/contact',contactRoute);
+app.use('/api/general',generalRoute);
 
 app.get("/",(req,res) => {
     console.log("sessionID: "+req.session.id);

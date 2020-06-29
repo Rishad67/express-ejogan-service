@@ -15,14 +15,13 @@ const order = {
         );",
         "CREATE TABLE IF NOT EXISTS ej_order(\
             id int AUTO_INCREMENT PRIMARY KEY,\
-            summary VARCHAR(255),\
+            shippingType VARCHAR(25),\
             description TEXT,\
-            category TEXT,\
             totalPrice int,\
             parcelWeight int,\
-            parcelLength int,\
-            parcelWidth int,\
-            parcelHeight int,\
+            parcelSize int,\
+            cashOnDelivery int,\
+            breakable int,\
             deliveryAddressId int,\
             deliveryPersonId int,\
             clientId int,\
@@ -30,7 +29,7 @@ const order = {
             createdOn DATETIME NOT NULL DEFAULT NOW(),\
             deliveryCharge int,\
             paymentStatus int DEFAULT 0,\
-            deliveryChargeReceived int,\
+            deliveryChargeReceived int DEFAULT 0,\
             paymentAccountNo VARCHAR(20),\
             paymentDate DATETIME,\
             transactionNo Text,\
