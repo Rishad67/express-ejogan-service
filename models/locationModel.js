@@ -21,14 +21,14 @@ const location = {
 };
 
 location.create = (res,resData,data,cb) => {
-    db.query("INSERT INTO ej_location SET ?", data, (err, results) => {
+    db.query("INSERT INTO ej_location SET ?", data, (err, result) => {
         if (err) {
             console.log(err);
             resData.errorMessage.fatalError = "Something went wrong!!";
             return res.json(resData);
         }
 
-        cb();
+        cb(result.insertId);
     });
 };
 

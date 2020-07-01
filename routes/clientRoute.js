@@ -3,6 +3,7 @@ const router = express.Router();
 const clientModel = require('../models/clientModel');
 const locationModel = require('../models/locationModel');
 const validateClientData = require('../validation/validateClientData');
+const validateLocationData = require('../validation/validateLocationData');
 const isLoggedIn = require('../helpers/isLoggedIn');
 
 router.post('/create',(req,res) => {
@@ -36,6 +37,46 @@ router.post('/create',(req,res) => {
     });
 });
 
+router.post('/my-clients',(req,res) => {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: "",
+            authError:  false
+        }
+    };
+    isLoggedIn(req,res,resData,"id",(user) => {
+        clientModel.getAll(res,resData,"ownerId="+ user.id,"id,name,website",(clients) => {
+            resData.clients = clients;
+            resData.success = true;
+            res.json(resData);
+        });
+    });
+});
+
+router.post('/attach-location',(req,res) => {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: "",
+            authError:  false
+        }
+    };
+
+    isLoggedIn(req,res,resData,"id",(user) => {
+        let newLocation = validateLocationData(req.body.location,resData.errorMessage);
+        if(!newLocation)
+            return res.json(resData);
+
+        newLocation.clientId = req.body.clientId;
+        locationModel.create(res,resData,newLocation,(locationId) => {
+            resData.locationId = locationId;
+            resData.success = true;
+            res.json(resData);
+        });
+    });
+});
+
 router.post('/details',(req,res) => {
     let resData = {
         success: false,
@@ -58,23 +99,6 @@ router.post('/details',(req,res) => {
                 resData.success = true;
                 res.json(resData);
             });
-        });
-    });
-});
-
-router.post('/my-clients',(req,res) => {
-    let resData = {
-        success: false,
-        errorMessage: {
-            fatalError: "",
-            authError:  false
-        }
-    };
-    isLoggedIn(req,res,resData,"id",(user) => {
-        clientModel.getAll(res,resData,"ownerId="+ user.id,"id,name,website",(clients) => {
-            resData.clients = clients;
-            resData.success = true;
-            res.json(resData);
         });
     });
 });
