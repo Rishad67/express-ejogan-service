@@ -3,7 +3,7 @@ const router = express.Router();
 const isLoggedIn = require('../helpers/isLoggedIn');
 const contactUsModel = require('../models/contactUsModel');
 
-router.post('/create',(req,res) => {
+router.post('/contact-us',(req,res) => {
     let resData = {
         success: false,
         errorMessage: {
@@ -12,9 +12,11 @@ router.post('/create',(req,res) => {
         }
     };
 
-    contactUsModel.create(res,resData,{question: req.body.question},() => {
-        resData.success = true;
-        res.json(resData);
+    isLoggedIn(req,res,resData,"id",(user) => {
+        contactUsModel.create(res,resData,{userId: user.id, question: req.body.question},() => {
+            resData.success = true;
+            res.json(resData);
+        });
     });
 });
 
@@ -38,7 +40,7 @@ router.post('/details',(req,res) => {
     });
 });
 
-router.post('/my-clients',(req,res) => {
+router.post('/my-messages',(req,res) => {
     let resData = {
         success: false,
         errorMessage: {

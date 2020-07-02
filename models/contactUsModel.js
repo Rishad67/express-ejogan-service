@@ -6,10 +6,10 @@ const contactUs = {
         id int AUTO_INCREMENT PRIMARY KEY,\
         question TEXT,\
         userId int,\
-        reply TEXT,\
-        replierId int,\
+        replyMessageId int,\
+        replied int DEFAULT 0,\
         FOREIGN KEY (userId) REFERENCES ej_user(id),\
-        FOREIGN KEY (replierId) REFERENCES ej_user(id) \
+        FOREIGN KEY (replyMessageId) REFERENCES ej_message(id) \
     );"
 };
 
