@@ -20,26 +20,6 @@ router.post('/contact-us',(req,res) => {
     });
 });
 
-router.post('/details',(req,res) => {
-    let resData = {
-        success: false,
-        errorMessage: {
-            fatalError: "",
-            authError:  false
-        }
-    };
-
-    isLoggedIn(req,res,resData,"id",(user) => {
-        let query = "id="+ req.body.id;
-        contactUsModel.getDetails(res,resData,query,"*",(contact) => {
-
-            resData.contact = contact;
-            resData.success = true;
-            res.json(resData);
-        });
-    });
-});
-
 router.post('/my-messages',(req,res) => {
     let resData = {
         success: false,
@@ -56,7 +36,7 @@ router.post('/my-messages',(req,res) => {
         });
     });
 });
-
+/*
 router.post("/update",(req,res) => {
     let resData = {
         success: false,
@@ -78,5 +58,5 @@ router.post("/update",(req,res) => {
         });
     });
 });
-
+*/
 module.exports = router;

@@ -83,5 +83,17 @@ location.getDetails = (res,resData,query,project,cb) => {
     })
 }
 
+location.delete = (res,resData,query,cb) => {
+    db.query("DELETE FROM ej_location WHERE "+ query,(err,results) => {
+        if(err) {
+            console.log(err);
+            resData.errorMessage.fatalError = "Something went wrong!!";
+            return res.json(resData);
+        }
+
+        cb();
+    })
+}
+
 module.exports = location;
 

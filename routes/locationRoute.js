@@ -25,4 +25,20 @@ router.post('/my-delivery-locations',(req,res) => {
     });
 });
 
+router.post('/remove',(req,res) => {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: "",
+            authError:  false
+        }
+    };
+    isLoggedIn(req,res,resData,"id",(user) => {
+        locationModel.delete(res,resData,"id="+req.body.locationId,() => {
+            resData.success = true;
+            res.json(resData);
+        })
+    });
+});
+
 module.exports = router;
