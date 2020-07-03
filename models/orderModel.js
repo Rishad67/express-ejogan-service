@@ -88,8 +88,9 @@ order.updateState = (res,resData,orderId,data,cb) => {
     });
 }
 
-order.getAll = (res,resData,query,project,cb) => {
-    db.query("SELECT "+ project +" FROM ej_order WHERE "+ query,(err,results) => {
+order.getByState = (res,resData,stateId,cb) => {
+    let query = "SELECT ej_order.id,ej_client.name,createdOn,pLocation.description as pickupAddress,dLocation.description as deliveryAddress FROM ej_order INNER JOIN ej_client ON ej_order.clientId = ej_client.id INNER JOIN ej_location as pLocation ON ej_order.pickupLocationId = pLocation.id  INNER JOIN ej_location as dLocation ON ej_order.deliveryAddressId = dLocation.id WHERE currentStateId="+ stateId +" ORDER BY createdOn DESC";
+    db.query(query,(err,results) => {
         if(err) {
             console.log(err);
             resData.errorMessage.fatalError = "Something went wrong!!";

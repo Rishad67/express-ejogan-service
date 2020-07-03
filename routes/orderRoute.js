@@ -51,6 +51,24 @@ router.post('/create',(req,res) => {
     });
 });
 
+router.post('/fetch',(req,res) => {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: "",
+            authError:  false
+        }
+    };
+
+    isLoggedIn(req,res,resData,"id",(user) => {
+        orderModel.getByState(res,resData,req.body.stateId,(orders) => {
+            resData.orders = orders;
+            resData.success = true;
+            res.json(resData);
+        });
+    });
+});
+
 router.post('/details',(req,res) => {
     let resData = {
         success: false,
