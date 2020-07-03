@@ -14,7 +14,8 @@ const deliveryLocation = {
         description VARCHAR(250),\
         latitude int,\
         longitude int,\
-        contactNo VARCHAR(255),\
+        contactNo VARCHAR(25),\
+        contactNo2 VARCHAR(25),\
         creatorId int,\
         FOREIGN KEY (creatorId) REFERENCES ej_user(id)\
     );"

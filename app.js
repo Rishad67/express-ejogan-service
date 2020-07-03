@@ -41,8 +41,10 @@ const clientRoute = require("./routes/clientRoute");
 const locationRoute = require("./routes/locationRoute");
 const contactRoute = require('./routes/contactRoute');
 const generalRoute = require('./routes/generalRoute');
+const deliveryRoute = require('./routes/deliveryRoute');
 
 app.use('/api/order',orderRoute);
+app.use('/api/delivery',deliveryRoute);
 app.use('/api/admin',adminRoute);
 app.use('/api/account',accountRoute);
 app.use('/api/client',clientRoute);

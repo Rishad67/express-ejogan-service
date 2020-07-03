@@ -14,7 +14,8 @@ const location = {
         description VARCHAR(250),\
         latitude int,\
         longitude int,\
-        contactNo VARCHAR(255),\
+        contactNo VARCHAR(25),\
+        contactNo2 VARCHAR(25),\
         clientId int,\
         FOREIGN KEY (clientId) REFERENCES ej_client(id)\
     );"
@@ -36,7 +37,7 @@ location.createAll = (res,resData,data,cb) => {
     if(data.length < 1)
         return cb();
 
-    db.query("INSERT INTO ej_location(name,city,thana,area,road,house,description,latitude,longitude,contactNo,clientId) VALUES ?", [data], (err, results) => {
+    db.query("INSERT INTO ej_location(name,city,thana,area,road,house,description,latitude,longitude,contactNo,contactNo2,clientId) VALUES ?", [data], (err, results) => {
         if (err) {
             console.log(err);
             resData.errorMessage.fatalError = "Something went wrong!!";

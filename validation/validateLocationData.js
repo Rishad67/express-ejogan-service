@@ -63,6 +63,12 @@ module.exports = (data,errorMessage) => {
         newLocation.contactNo = data.contactNo;
     }
 
+    if(!data.contactNo2) {
+        newLocation.contactNo2 = null;
+    } else {
+        newLocation.contactNo2 = data.contactNo2;
+    }
+
     if(!error)
         return newLocation;
 }

@@ -19,4 +19,37 @@ router.post("/terms-conditions",(req,res) => {
 
 });
 
+router.post("/service-charge",(req,res) => {
+    let resData = {
+        success: false,
+        errorMessage: {
+            fatalError: "",
+            authError:  false
+        }
+    };
+
+    resData.charges = [
+        {
+            type: "শিপমেন্ট চার্জ",
+            amount: 0
+        },
+        {
+            type: "ভঙ্গুর প্রোডাক্ট চার্জ",
+            amount: 0
+        },
+        {
+            type: "কালেকশন চার্জ",
+            amount: 0
+        },
+        {
+            type: "সর্বমোট",
+            amount: 0
+        }
+    ];
+
+    resData.success = true;
+    res.json(resData);
+
+});
+
 module.exports = router;

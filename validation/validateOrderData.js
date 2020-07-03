@@ -1,5 +1,6 @@
 const validator = require("../helpers/validationHelper");
 const validateLocationData = require('../validation/validateLocationData');
+const constants = require('../helpers/constants');
 
 module.exports = (data,errorMessage) => {
     let newOrder = {};
@@ -13,20 +14,19 @@ module.exports = (data,errorMessage) => {
         newOrder.description = data.description;
     }
 
-    /*if(!data.category) {
-        error = true;
-        errorMessage.category = "Price must be Positive Number";
-    }
-    else {
-        newOrder.category = data.category;
-    }*/
-
-    newOrder.parcelSize = data.parcelSize;
     newOrder.cashOndelivery = data.cashOndelivery ? 1 : 0;
     newOrder.breakable = data.breakable ? 1 : 0;
     newOrder.shippingType = data.shippingType;
 
-    if(!validator.isPositiveNumber(data.totalPrice)) {
+    if(/^[0-2]$/.test(data.parcelSize)) {
+        newOrder.parcelSize = constants.parcelSize[data.parcelSize];
+    }
+    else {
+        error = true;
+        errorMessage.fatalError = "Invalid parcel size received";
+    }
+
+    if(data.cashOndelivery && !validator.isPositiveNumber(data.totalPrice)) {
         error = true;
         errorMessage.totalPrice = "Price must be Positive Number";
     }
@@ -40,6 +40,14 @@ module.exports = (data,errorMessage) => {
     }
     else {
         newOrder.parcelWeight = data.parcelWeight;
+    }
+
+    if(data.weightUnit === "KG" || data.weightUnit === "Gram") {
+        newOrder.weightUnit = data.weightUnit;
+    }
+    else {
+        error = true;
+        errorMessage.fatalError = "Invalid weight unit received";
     }
 
     if(!validator.isPositiveNumber(data.clientId)) {
