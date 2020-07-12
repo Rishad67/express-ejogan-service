@@ -45,11 +45,11 @@ router.post('/other-details',(req,res) => {
     };
 
     isLoggedIn(req,res,resData,"id",(user) => {
-        let project = "shippingType,description,totalPrice,CONCAT(parcelWeight,' ',weightUnit) as totalWeight,parcelSize,cashOnDelivery,breakable";
+        let project = "shippingType,description,collectionAmount,CONCAT(parcelWeight,' ',weightUnit) as totalWeight,parcelSize,cashOnDelivery,breakable";
         orderModel.getDeliveryDetails(res,resData,req.body.id,project,(order) => {
             order.breakable = order.breakable == 1;
             order.cashOnDelivery = order.cashOnDelivery == 1;
-            order.totalPrice = order.cashOnDelivery ? order.totalPrice + " TK" : undefined;
+            order.collectionAmount = order.cashOnDelivery ? order.collectionAmount + " TK" : undefined;
             resData.order = order;
             resData.success = true;
             res.json(resData);

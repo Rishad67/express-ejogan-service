@@ -17,7 +17,7 @@ const order = {
             id int AUTO_INCREMENT PRIMARY KEY,\
             shippingType VARCHAR(25),\
             description TEXT,\
-            totalPrice int,\
+            collectionAmount int,\
             parcelWeight int,\
             weightUnit VARCHAR(5),\
             parcelSize VARCHAR(50),\
@@ -29,6 +29,7 @@ const order = {
             pickupLocationId int,\
             createdOn DATETIME NOT NULL DEFAULT NOW(),\
             deliveryCharge int,\
+            deliveryChargeDescription VARCHAR(255),\
             paymentStatus int DEFAULT 0,\
             deliveryChargeReceived int DEFAULT 0,\
             paymentAccountNo VARCHAR(20),\
@@ -115,8 +116,9 @@ order.getMyOrders = (res,resData,userId,project,cb) => {
     })
 }
 
-order.getDetails = (res,resData,query,project,cb) => {
-    db.query("SELECT "+ project +" FROM ej_order WHERE "+ query,(err,results) => {
+order.getDetails = (res,resData,id,project,cb) => {
+    let query = "SELECT "+ project +" FROM ej_order INNER JOIN ej_client ON ej_order.clientId = ej_client.id INNER JOIN ej_location as pLocation ON ej_order.pickupLocationId = pLocation.id  INNER JOIN ej_delivery_location as dLocation ON ej_order.deliveryAddressId = dLocation.id INNER JOIN ej_orderstate ON ej_order.currentStateId = ej_orderstate.id WHERE ej_order.id="+ id;
+    db.query(query,(err,results) => {
         if(err) {
             console.log(err);
             resData.errorMessage.fatalError = "Something went wrong!!";

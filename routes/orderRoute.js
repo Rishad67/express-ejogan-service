@@ -8,7 +8,7 @@ const isLoggedIn = require('../helpers/isLoggedIn');
 const createOrder = (res,resData,newOrder,userId) => {
     console.log(newOrder);
     orderModel.create(res,resData,newOrder,() => {
-        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as client,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
         orderModel.getMyOrders(res,resData,userId,project,(orders) => {
             for(var i=0; i<orders.length; i++) {
                 orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";
@@ -61,8 +61,44 @@ router.post('/details',(req,res) => {
     };
 
     isLoggedIn(req,res,resData,"id",(user) => {
-        let query = "id="+ req.body.id;
-        orderModel.getDetails(res,resData,query,"*",(order) => {
+        let project = "ej_order.id,ej_order.description,shippingType,currentStateId,CONCAT(parcelWeight,' ',weightUnit) as totalWeight,collectionAmount,parcelSize,cashOnDelivery,breakable,deliveryChargeDescription,ej_orderstate.description as status,paymentStatus,ej_client.name as client,createdOn,pLocation.description as pickupAddress,pLocation.contactNo as plc1,pLocation.contactNo2 as plc2,dLocation.description as deliveryAddress,dLocation.contactNo as dlc1,dLocation.contactNo2 as dlc2";
+        orderModel.getDetails(res,resData,req.body.id,project,(order) => {
+            order.pickupAddress = {
+                pickupAddress: order.pickupAddress,
+                contact: order.plc1,
+                contact2: order.plc2
+            }
+            order.deliveryAddress = {
+                deliveryAddress: order.deliveryAddress,
+                contact: order.dlc1,
+                contact2: order.dlc2
+            }
+            order.plc1 = order.plc2 = order.dlc1 = order.dlc2 = undefined;
+
+            order.charges = [
+                {
+                    type: "শিপমেন্ট চার্জ",
+                    amount: 0
+                },
+                {
+                    type: "ভঙ্গুর প্রোডাক্ট চার্জ",
+                    amount: 0
+                },
+                {
+                    type: "কালেকশন চার্জ",
+                    amount: 0
+                },
+                {
+                    type: "সর্বমোট",
+                    amount: 0
+                }
+            ];
+            order.collectionAmount = order.cashOnDelivery ? order.collectionAmount + " TK" : "0";
+            order.breakable = order.breakable == 1;
+            order.cashOnDelivery = order.cashOnDelivery == 1;
+            order.paymentStatus = order.paymentStatus ? "Completed" : "Due";
+            order.changable = order.currentStateId < 2;
+            order.onGoing = true; //later
             resData.order = order;
             resData.success = true;
             res.json(resData);
@@ -79,7 +115,7 @@ router.post('/my-orders',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as shop,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as client,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
         orderModel.getMyOrders(res,resData,user.id,project,(orders) => {
             for(var i=0; i < orders.length; i++) {
                 orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";

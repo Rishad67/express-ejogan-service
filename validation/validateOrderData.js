@@ -26,12 +26,17 @@ module.exports = (data,errorMessage) => {
         errorMessage.fatalError = "Invalid parcel size received";
     }
 
-    if(data.cashOndelivery && !validator.isPositiveNumber(data.totalPrice)) {
-        error = true;
-        errorMessage.totalPrice = "Price must be Positive Number";
+    if(data.cashOndelivery) {
+        if(!validator.isPositiveNumber(data.collectionAmount)) {
+            error = true;
+            errorMessage.collectionAmount = "Price must be Positive Number";
+        }
+        else {
+            newOrder.collectionAmount = data.collectionAmount;
+        }
     }
     else {
-        newOrder.totalPrice = data.totalPrice;
+        newOrder.collectionAmount = 0;
     }
 
     if(!validator.isPositiveNumber(data.parcelWeight)) {
