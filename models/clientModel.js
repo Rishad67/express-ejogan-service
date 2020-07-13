@@ -50,7 +50,7 @@ client.getAll = (res,resData,query,project,cb) => {
         clients.forEach(c => {
             clientIds.push(c.id);
         });
-        db.query("SELECT id,clientId,description,contactNo,contactNo2 FROM ej_location WHERE clientId IN (?) ORDER BY clientId",[clientIds], (err,locations) => {
+        db.query("SELECT id,clientId,fullAddress,contactNo,contactNo2 FROM ej_location WHERE clientId IN (?) ORDER BY clientId",[clientIds], (err,locations) => {
             if(err) {
                 console.log(err);
                 resData.errorMessage.fatalError = "Something went wrong!!";

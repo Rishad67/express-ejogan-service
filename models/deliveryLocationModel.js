@@ -11,7 +11,7 @@ const deliveryLocation = {
         area VARCHAR(50),\
         road VARCHAR(50),\
         house VARCHAR(20),\
-        description VARCHAR(250),\
+        fullAddress VARCHAR(250),\
         latitude int,\
         longitude int,\
         contactNo VARCHAR(25),\

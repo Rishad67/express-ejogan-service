@@ -39,10 +39,10 @@ module.exports = (data,errorMessage) => {
         newLocation.house = data.house;
     }
 
-    if(!data.description) {
-        newLocation.description = null;
+    if(!data.fullAddress) {
+        newLocation.fullAddress = null;
     } else {
-        newLocation.description = data.description;
+        newLocation.fullAddress = data.fullAddress;
     }
 
     if(!data.latitude) {

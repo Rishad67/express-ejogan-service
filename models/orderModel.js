@@ -16,7 +16,7 @@ const order = {
         "CREATE TABLE IF NOT EXISTS ej_order(\
             id int AUTO_INCREMENT PRIMARY KEY,\
             shippingType VARCHAR(25),\
-            description TEXT,\
+            productDescription TEXT,\
             collectionAmount int,\
             parcelWeight int,\
             weightUnit VARCHAR(5),\
@@ -91,7 +91,7 @@ order.updateState = (res,resData,orderId,data,cb) => {
 }
 
 order.getByState = (res,resData,stateId,cb) => {
-    let query = "SELECT ej_order.id,ej_client.name as client,createdOn,pLocation.description as pickupAddress,pLocation.contactNo as plc1,pLocation.contactNo2 as plc2,dLocation.description as deliveryAddress,dLocation.contactNo as dlc1,dLocation.contactNo2 as dlc2 FROM ej_order INNER JOIN ej_client ON ej_order.clientId = ej_client.id INNER JOIN ej_location as pLocation ON ej_order.pickupLocationId = pLocation.id  INNER JOIN ej_delivery_location as dLocation ON ej_order.deliveryAddressId = dLocation.id WHERE currentStateId="+ stateId +" ORDER BY createdOn DESC";
+    let query = "SELECT ej_order.id,ej_client.name as client,createdOn,pLocation.fullAddress as pickupAddress,pLocation.contactNo as plc1,pLocation.contactNo2 as plc2,dLocation.fullAddress as deliveryAddress,dLocation.contactNo as dlc1,dLocation.contactNo2 as dlc2 FROM ej_order INNER JOIN ej_client ON ej_order.clientId = ej_client.id INNER JOIN ej_location as pLocation ON ej_order.pickupLocationId = pLocation.id  INNER JOIN ej_delivery_location as dLocation ON ej_order.deliveryAddressId = dLocation.id WHERE currentStateId="+ stateId +" ORDER BY createdOn DESC";
     db.query(query,(err,results) => {
         if(err) {
             console.log(err);

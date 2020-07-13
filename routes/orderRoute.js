@@ -8,7 +8,7 @@ const isLoggedIn = require('../helpers/isLoggedIn');
 const createOrder = (res,resData,newOrder,userId) => {
     console.log(newOrder);
     orderModel.create(res,resData,newOrder,() => {
-        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as client,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        let project = "ej_order.id as id,productDescription,createdOn,ej_client.name as client,ej_orderstate.description as status,paymentStatus,ej_orderstate.id as stateId";
         orderModel.getMyOrders(res,resData,userId,project,(orders) => {
             for(var i=0; i<orders.length; i++) {
                 orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";
@@ -61,15 +61,17 @@ router.post('/details',(req,res) => {
     };
 
     isLoggedIn(req,res,resData,"id",(user) => {
-        let project = "ej_order.id,ej_order.description,shippingType,currentStateId,CONCAT(parcelWeight,' ',weightUnit) as totalWeight,collectionAmount,parcelSize,cashOnDelivery,breakable,deliveryChargeDescription,ej_orderstate.description as status,paymentStatus,ej_client.name as client,createdOn,pLocation.description as pickupAddress,pLocation.contactNo as plc1,pLocation.contactNo2 as plc2,dLocation.description as deliveryAddress,dLocation.contactNo as dlc1,dLocation.contactNo2 as dlc2";
+        let project = "ej_order.id,productDescription,shippingType,currentStateId,ej_order.clientId,CONCAT(parcelWeight,' ',weightUnit) as totalWeight,collectionAmount,parcelSize,cashOnDelivery,breakable,deliveryChargeDescription,ej_orderstate.description as status,paymentStatus,ej_client.name as client,createdOn,pLocation.fullAddress as pickupAddress,pLocation.id as pickupAddressId,pLocation.contactNo as plc1,pLocation.contactNo2 as plc2,dLocation.fullAddress as deliveryAddress,dLocation.id as deliveryAddressId,dLocation.contactNo as dlc1,dLocation.contactNo2 as dlc2";
         orderModel.getDetails(res,resData,req.body.id,project,(order) => {
             order.pickupAddress = {
-                pickupAddress: order.pickupAddress,
+                id: order.pickupAddressId,
+                fullAddress: order.pickupAddress,
                 contact: order.plc1,
                 contact2: order.plc2
             }
             order.deliveryAddress = {
-                deliveryAddress: order.deliveryAddress,
+                id: order.deliveryAddressId,
+                fullAddress: order.deliveryAddress,
                 contact: order.dlc1,
                 contact2: order.dlc2
             }
@@ -115,7 +117,7 @@ router.post('/my-orders',(req,res) => {
         }
     };
     isLoggedIn(req,res,resData,"id",(user) => {
-        let project = "ej_order.id as id,ej_order.description as description,createdOn,ej_client.name as client,ej_orderstate.description as status,paymentStatus,ej_orderstate.description as stateId";
+        let project = "ej_order.id as id,productDescription,createdOn,ej_client.name as client,ej_orderstate.description as status,paymentStatus,ej_orderstate.id as stateId";
         orderModel.getMyOrders(res,resData,user.id,project,(orders) => {
             for(var i=0; i < orders.length; i++) {
                 orders[i].paymentStatus = orders[i].paymentStatus ? "Completed" : "Due";

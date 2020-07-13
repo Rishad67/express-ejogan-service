@@ -93,7 +93,7 @@ router.post('/details',(req,res) => {
                 resData.errorMessage.fatalError = "Something went wrong!!";
                 return res.json(resData);
             }
-            locationModel.getAll(res,resData,"clientId="+client.id,"id,name,city,thana,area,road,house,description,latitude,longitude,contactNo",(locations) => {
+            locationModel.getAll(res,resData,"clientId="+client.id,"id,fullAddress,contactNo,contactNo2",(locations) => {
                 client.locations = locations;
                 resData.client = client;
                 resData.success = true;

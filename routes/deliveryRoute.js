@@ -17,12 +17,12 @@ router.post('/fetch',(req,res) => {
         orderModel.getByState(res,resData,req.body.stateId,(orders) => {
             orders.forEach(o => {
                 o.pickupAddress = {
-                    pickupAddress: o.pickupAddress,
+                    fullAddress: o.pickupAddress,
                     contact: o.plc1,
                     contact2: o.plc2
                 }
                 o.deliveryAddress = {
-                    deliveryAddress: o.deliveryAddress,
+                    fullAddress: o.deliveryAddress,
                     contact: o.dlc1,
                     contact2: o.dlc2
                 }
@@ -45,7 +45,7 @@ router.post('/other-details',(req,res) => {
     };
 
     isLoggedIn(req,res,resData,"id",(user) => {
-        let project = "shippingType,description,collectionAmount,CONCAT(parcelWeight,' ',weightUnit) as totalWeight,parcelSize,cashOnDelivery,breakable";
+        let project = "shippingType,productDescription,collectionAmount,CONCAT(parcelWeight,' ',weightUnit) as totalWeight,parcelSize,cashOnDelivery,breakable";
         orderModel.getDeliveryDetails(res,resData,req.body.id,project,(order) => {
             order.breakable = order.breakable == 1;
             order.cashOnDelivery = order.cashOnDelivery == 1;

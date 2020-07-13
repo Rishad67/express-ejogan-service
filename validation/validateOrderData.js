@@ -6,20 +6,20 @@ module.exports = (data,errorMessage) => {
     let newOrder = {};
     let error = false;
 
-    if(!validator.isValidString(data.description,5,500)) {
+    if(!validator.isValidString(data.productDescription,5,500)) {
         error = true;
-        errorMessage.description = "description length must be between 5 to 500 character";
+        errorMessage.productDescription = "productDescription length must be between 5 to 500 character";
     }
     else {
-        newOrder.description = data.description;
+        newOrder.productDescription = data.productDescription;
     }
 
     newOrder.cashOndelivery = data.cashOndelivery ? 1 : 0;
     newOrder.breakable = data.breakable ? 1 : 0;
     newOrder.shippingType = data.shippingType;
 
-    if(/^[0-2]$/.test(data.parcelSize)) {
-        newOrder.parcelSize = constants.parcelSize[data.parcelSize];
+    if(constants.parcelSize.includes(data.parcelSize)) {
+        newOrder.parcelSize = data.parcelSize;
     }
     else {
         error = true;
