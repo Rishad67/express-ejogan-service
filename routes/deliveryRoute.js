@@ -14,7 +14,7 @@ router.post('/fetch',(req,res) => {
     };
 
     isLoggedIn(req,res,resData,"id",(user) => {
-        orderModel.getByState(res,resData,req.body.stateId,(orders) => {
+        orderModel.getByState(res,resData,req.body.state,(orders) => {
             orders.forEach(o => {
                 o.pickupAddress = {
                     fullAddress: o.pickupAddress,
@@ -28,14 +28,14 @@ router.post('/fetch',(req,res) => {
                 }
                 o.plc1 = o.plc2 = o.dlc1 = o.dlc2 = undefined;
             });
-            resData.orders = orders;
+            resData.deliveries = orders;
             resData.success = true;
             res.json(resData);
         });
     });
 });
 
-router.post('/other-details',(req,res) => {
+router.post('/details',(req,res) => {
     let resData = {
         success: false,
         errorMessage: {

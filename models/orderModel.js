@@ -1,6 +1,5 @@
 
 const db = require('../db/connection');
-const { query } = require('express');
 
 const order = {
     schemas: [
@@ -140,6 +139,26 @@ order.getDeliveryDetails = (res,resData,id,project,cb) => {
 
         cb(results[0]);
     })
+}
+
+order.delete = (res,resData,id,cb) => {
+    db.query("DELETE FROM ej_order_orderstate WHERE orderId="+ id,(err,results) => {
+        if(err) {
+            console.log(err);
+            resData.errorMessage.fatalError = "Something went wrong!!";
+            return res.json(resData);
+        }
+
+        db.query("DELETE FROM ej_order WHERE id="+ id,(err,results) => {
+            if(err) {
+                console.log(err);
+                resData.errorMessage.fatalError = "Something went wrong!!";
+                return res.json(resData);
+            }
+
+            cb();
+        })
+    });
 }
 
 module.exports = order;
